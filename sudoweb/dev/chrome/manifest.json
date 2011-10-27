@@ -1,0 +1,34 @@
+{
+  "name": "SudoWeb",
+  "version": "1.0",
+
+  "description": "Use a secondary, disposable Facebook account to sing in on third-party sites",
+
+  "icons": {
+    "16": "img/cloud16.png",
+    "32": "img/cloud32.png",
+    "48": "img/cloud48.png",
+    "64": "img/cloud64.png",
+    "128": "img/cloud256.png",
+    "256": "img/cloud256.png"
+  },
+
+  "background_page": "background.html",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"], 
+      "js": [
+        "page_magic.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+   ],
+  "homepage_url": "http://code.google.com/p/sudoweb/",
+  "incognito": "spanning",
+  "minimum_chrome_version": "11.0.674.0",
+  "options_page": "options.html",
+  "permissions": [
+    "tabs", "cookies", "http://*/*", "https://*/*"
+   ]
+}
