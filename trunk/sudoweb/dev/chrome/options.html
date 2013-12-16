@@ -1,172 +1,6 @@
 <html>
   <head>
-    <script>
-
-
-var msg_port = null;
-var msg_read_callback = new Array();
-
-
-function msg_write (msg, function_f, function_arg) {
-  try {
-    var x = arguments.callee.caller.name.toString();
-    msg_read_callback.push({owner: x, 
-                            callback_f: function_f, 
-                            callback_arg: function_arg});
-    msg_port.postMessage (msg);
-    console.log ("* msg_write: " + JSON.stringify (msg));
-  } catch (e) {console.log ("* msg_write: error " + e);}
-}
-
-
-function msg_readwrite_setup () {
-
-  if (msg_port) return;
-
-  try {
-
-    msg_port = chrome.extension.connect({name: "sudoweb_options"});
-
-    msg_port.onMessage.addListener(function(msg) {
-      if (msg.response)
-        console.log("* msg_read: " + msg.owner 
-                    + ", " + JSON.stringify(msg.response));
-      console.log ("* msg_read: " + msg.owner);
-      for (var i = 0; i < msg_read_callback.length; i++)
-        if (msg_read_callback[i].owner == msg.owner 
-            && msg_read_callback[i].callback_f) {
-          var callback_f = msg_read_callback [i].callback_f;
-          var callback_arg = msg_read_callback [i].callback_arg;
-          msg_read_callback.splice(i, 1);
-          callback_f (callback_arg, msg.response);
-          break;
-        } else console.log (" * msg_read: unable to find owner " + msg.owner);
-    });
-
-  } catch (e) {console.log ("* msg_read: error " + e);}
-
-}
-
-
-      // takes a snapshot of current fb cookies 
-      // and stores them under temp sudoweb profile. 
-      //
-      // used so as not minimize user discomfort 
-      // (he gets back his original fb session 
-      // after configuring sudoweb). 
-      //
-      function fb_cookies_snapshot(callback) {
-        console.log ("* fb_cookies_snapshot");
-        msg_write ({fb_cookies_snapsave: true}, 
-                   function(xcallback) {
-                     console.log (" * fb_cookies_snapshot done");
-                     xcallback();
-                   }, 
-                   callback);
-      }
-
-      // restores an fb cookie snapshot
-      // 
-      // see fb_cookies_snapshot
-      //
-      function fb_cookies_snaprestore(callback) {
-        console.log ("* fb_cookies_snaprestore");
-        msg_write ({fb_cookies_snapload: true},
-                   function(xcallback) {
-                     console.log (" * fb_cookies_snaprestore done");
-                     if (xcallback) xcallback();
-                   },
-                   callback);
-      }
-
-      // stores fb cookies under a sudoweb profile 
-      //
-      // note: currently we consider 
-      //       profile 0 (primary) & 1 (secondary)
-      // 
-      function fb_cookies_mem(id) {
-        document.getElementById("identity_b_"+id).disabled = 'true';
-        console.log ("* fb_cookies_mem " + id);
-        if (!confirm("Do you really want to set an identity?")) return;
-        msg_write ({fb_cookies_mem: true, profile_id: id},
-                   function(id) {
-                     console.log (" * fb_cookies_mem " + id + " done");
-                     if (id == 1)
-                       fb_cookies_clear(function () {
-                         fb_cookies_test(1, function() {
-                           //alert('Identity Set!?');
-                           fb_cookies_snaprestore(function () {
-                             document.getElementById("identity_b_1").disabled = '';});
-                         });
-                       });
-                     else if (id == 0)
-                       fb_cookies_clear(function() {
-                         fb_cookies_test(0, function() {
-                           //alert('Identity Set!?');
-                           fb_cookies_clear(function () {
-                             document.getElementById("identity_b_0").disabled = '';
-                             fb_request_focus();
-                           });
-                         });
-                       });
-                   },
-                   id);
-      }
-
-      // clear current fb cookies 
-      //
-      function fb_cookies_clear(callback) {
-        console.log ("* fb_cookies_clear");
-        msg_write ({fb_cookies_clear: true},
-                   function(xcallback) {
-                     console.log (" * fb_cookies_clear done");
-                     if (xcallback) xcallback();
-                   },
-                   callback);
-      }
-
-      // test if stored fb cookies in sudoweb profiles are still valid
-      // 
-      function fb_cookies_test(id, callback) {
-        console.log ("* fb_cookies_test " + id);
-        var info_out = document.getElementById("identity_v_"+id);
-        info_out.innerHTML = "Testing...";
-        info_out.style.backgroundColor = "FFFF00";
-        msg_write ({fb_cookies_test: true, profile_id: id},
-                   function(xcallback, response) {
-                     var info_out = document.getElementById("identity_v_"+id);
-                     if (response.fb_name != "") {
-                       info_out.innerHTML = response.fb_name;
-                       info_out.style.backgroundColor = "66FF00";
-                     }
-                     else {
-                       info_out.innerHTML = "Missing";
-                       info_out.style.backgroundColor = "FF3300";
-                     }
-                     console.log (" * fb_cookies_test " + id + " done");
-                     if (xcallback) xcallback();
-                   },
-                   callback);
-      }
-
-      // nuke sudoweb settings
-      // 
-      function nuke_settings() {
-        console.log ("* nuke_settings");
-        msg_write ({nuke_settings: true},
-                   function() {
-                     console.log (" * nuke_settings done");
-                     alert('Boom! Extension settings nuked.');
-                     self.location.reload();
-                   },
-                   null);
-      }
-
-      function fb_request_focus() {
-        msg_write ({focus_on_url: "www.facebook.com"}, null, null);
-      }
-
-    </script>
+    <script src="options.js" type="text/javascript"></script>
 <style type="text/css">
 <!--
 html, body {
@@ -190,7 +24,8 @@ ol {margin-left: 0; padding-left: 0em;}
 -->
 </style>
   </head>
-  <body 
+  <body>
+  <!--<body 
     onload="
       msg_readwrite_setup();
       document.getElementById('identity_b_0').disabled = 'true';
@@ -207,7 +42,7 @@ ol {margin-left: 0; padding-left: 0em;}
           });
         });
       });"
-    onbeforeunload="fb_cookies_snaprestore();">
+    onbeforeunload="fb_cookies_snaprestore();">-->
 
   <div style="padding-left: 4em; padding-top: 0.2em; width:450px; ">
   <h1>SudoWeb</h1>
@@ -247,14 +82,16 @@ ol {margin-left: 0; padding-left: 0em;}
   <tr>
     <td><u>Primary Identity:</u></td>
     <td><div id="identity_v_0" style="font-weight: bold">N/A</div></td>
-    <td><input type="button" value="Set Primary Identity*" id="identity_b_0"
-         onclick="fb_cookies_snapshot(function () {fb_cookies_mem(0);})"/></td>
+    <!--<td><input type="button" value="Set Primary Identity*" id="identity_b_0"
+         onclick="fb_cookies_snapshot(function () {fb_cookies_mem(0);})"/></td>-->
+    <td><input type="button" value="Set Primary Identity*" id="identity_b_0"/></td>
   </tr>
   <tr>
     <td><u>Secondary Identity:</u></td>
     <td><div id="identity_v_1" style="font-weight: bold">N/A</div></td>
-    <td><input type="button" value="Set Secondary Identity*" id="identity_b_1"
-         onclick="fb_cookies_mem(1);"/></td>
+    <!--<td><input type="button" value="Set Secondary Identity*" id="identity_b_1"
+         onclick="fb_cookies_mem(1);"/></td>-->
+    <td><input type="button" value="Set Secondary Identity*" id="identity_b_1"/></td>
   </tr>
   </table>
   <i>* will log you out from your current Facebook session.</i>
@@ -267,12 +104,14 @@ ol {margin-left: 0; padding-left: 0em;}
   <div style="color: #777777">
   <h3>Debug Tools</h3>
   <p>
-    Clear all settings <input type="button" value="x" 
-     onclick="nuke_settings();"/>
+    Clear all settings <!--<input type="button" value="x" id='nuke_all_b'
+     onclick="nuke_settings();"/>-->
+    <input type="button" value="x" id='nuke_all_b'/>
     <br>
-    Clear Facebook cookies<input type="button" value="x" 
+    Clear Facebook cookies <!--<input type="button" value="x" id='nuke_fb_b'
      onclick="fb_cookies_clear(function() {
-       alert('current fb cookies are no more!');});">
+       alert('current fb cookies are no more!');});">-->
+    <input type="button" value="x" id='nuke_fb_b'/>
   </p>
   </div>
 
