@@ -1,34 +1,46 @@
 {
-  "name": "SudoWeb",
-  "version": "1.0",
+	"manifest_version": 2,
 
-  "description": "Use a secondary, disposable Facebook account to sing in on third-party sites",
+	"name": "SudoWeb (beta)",
 
-  "icons": {
-    "16": "img/cloud16.png",
-    "32": "img/cloud32.png",
-    "48": "img/cloud48.png",
-    "64": "img/cloud64.png",
-    "128": "img/cloud256.png",
-    "256": "img/cloud256.png"
-  },
+	"version": "2.0.2",
 
-  "background_page": "background.html",
-  "content_scripts": [
-    {
-      "matches": ["http://*/*", "https://*/*"], 
-      "js": [
-        "page_magic.js"
-      ],
-      "run_at": "document_end",
-      "all_frames": true
-    }
-   ],
-  "homepage_url": "http://code.google.com/p/sudoweb/",
-  "incognito": "spanning",
-  "minimum_chrome_version": "11.0.674.0",
-  "options_page": "options.html",
-  "permissions": [
-    "tabs", "cookies", "http://*/*", "https://*/*"
-   ]
+	"description": "Use 2nd (disposable) Facebook 
+			account to sign in on third-party sites 
+			through Facebook Connect (aka 
+			\"Login with Facebook\")",
+
+	"icons": {
+		 "16": "img/cloud16.png",
+		 "32": "img/cloud32.png",
+		 "48": "img/cloud48.png",
+		 "64": "img/cloud64.png",
+		"128": "img/cloud256.png",
+		"256": "img/cloud256.png"
+	},
+
+	"background": {
+		"page": "background.html"
+	},
+
+	"content_scripts": [
+	{
+		   "matches": ["http://*/*", "https://*/*"], 
+		        "js": ["page_magic.js"],
+		    "run_at": "document_end",
+		"all_frames": true
+	}
+	],
+
+	"homepage_url": "http://www.cs.columbia.edu/~kontaxis/sudoweb/",
+
+	"incognito": "spanning",
+
+	"minimum_chrome_version": "11.0.674.0",
+
+	"options_page": "options.html",
+
+	"permissions": [
+		"tabs", "cookies", "http://*/*", "https://*/*"
+	 ]
 }
