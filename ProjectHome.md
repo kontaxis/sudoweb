@@ -1,0 +1,3 @@
+"[SudoWeb: Minimizing Information Disclosure to Third Parties in Single Sign-On Platforms](http://sudoweb.googlecode.com/files/sudoweb.isc11.pdf). <br>Georgios <b>Kontaxis</b>, Michalis <b>Polychronakis</b>, and Evangelos P. <b>Markatos</b>. <br>In Proceedings of the 14th Information Security Conference. October 2011, Xi'an, China."<br>
+<br>
+Project Home: <a href='http://www.cs.columbia.edu/~kontaxis/sudoweb/'>http://www.cs.columbia.edu/~kontaxis/sudoweb/</a>
